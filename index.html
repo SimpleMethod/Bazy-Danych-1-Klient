@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Baza Danych na zaliczenie</title>
+    <link href="/pre/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/pre/css/fontawesome-all.min.css" rel="stylesheet" type="text/css">
+    <link href="/pre/css/sb-admin.css" rel="stylesheet">
+
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="#/">Klient do DB</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav navbar-sidenav" id="navbarAccordion">
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="TableManagement">
+                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#TableManagement" data-parent="#TableManagementccordion">
+                    <i class="fa fa-fw fa-file"></i>
+                    <span class="nav-link-text">Zarządzanie Tabelami</span>
+                </a>
+                <ul class="sidenav-second-level collapse" id="TableManagement">
+                    <li>
+                        <a class="nav-link" href="#createtable">
+                            <i class="fa fa-fw fa-table"></i>
+                            <span class="nav-link-text">Tworzenie nowych tabel </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#droptable">
+                            <i class="fa fa-fw fa-table"></i>
+                            <span class="nav-link-text">Usuwanie tabel</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="ContentTableManagement">
+                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#ContentTableManagement" data-parent="#ContentTableManagementAccordion">
+                    <i class="far fa-clone"></i>
+                    <span class="nav-link-text">Zarządzanie zawartością tabel</span>
+                </a>
+                <ul class="sidenav-second-level collapse" id="ContentTableManagement">
+                    <li>
+                        <a class="nav-link" href="#insertintotable">
+                            <i class="fas fa-database"></i>
+                            <span class="nav-link-text">Dodanie rekordu do tabeli</span>
+                        </a>
+                    </li>
+                    <li>
+                    <a class="nav-link" href="#deletefromtable">
+                        <i class="fas fa-database"></i>
+                        <span class="nav-link-text">Usunięcie rekordu z tabeli</span>
+                    </a>
+                </li>
+                    <li>
+                        <a class="nav-link" href="#updatefromtable">
+                            <i class="fas fa-database"></i>
+                            <span class="nav-link-text">Modyfikacja rekordu z tabeli</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+                <a class="nav-link" href="#selectfromtable">
+                    <i class="fas fa-paste"></i>
+                    <span class="nav-link-text">Wyświetlanie danych z Tabel</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+                <a class="nav-link" href="#sequences">
+                    <i class="fas fa-cogs"></i>
+                    <span class="nav-link-text">Tworzenie sekwencji </span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="FunctionProcManagement">
+                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#FunctionProcManagement" data-parent="#FunctionProcManagementAccordion">
+                    <i class="far fa-id-badge"></i>
+                    <span class="nav-link-text">Tworzenie Funkcji i Procedur </span>
+                </a>
+                <ul class="sidenav-second-level collapse" id="FunctionProcManagement">
+                    <li>
+                        <a class="nav-link" href="#createfunction">
+                            <i class="fa fa-fw fa-table"></i>
+                            <span class="nav-link-text">Tworzenie Funkcji</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#createprocedures">
+                            <i class="fa fa-fw fa-table"></i>
+                            <span class="nav-link-text">Tworzenie Procedur</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="FunctionProcExecute">
+                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#FunctionProcExecute" data-parent="#FunctionProcExecutetAccordion">
+                    <i class="far fa-id-badge"></i>
+                    <span class="nav-link-text">Uruchamianie Funkcji i Procedur </span>
+                </a>
+                <ul class="sidenav-second-level collapse" id="FunctionProcExecute">
+                    <li>
+                        <a class="nav-link" href="#executefunction">
+                            <i class="fa fa-fw fa-table"></i>
+                            <span class="nav-link-text">Uruchamianie Funkcji</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#executeprocedures">
+                            <i class="fa fa-fw fa-table"></i>
+                            <span class="nav-link-text">Uruchamianie Procedur</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+                <a class="nav-link" href="#executeorder66">
+                    <i class="fab fa-firstdraft"></i>
+                    <span class="nav-link-text">Wykonanie dowolnego kodu SQL</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+                <a class="nav-link" href="#viewselect">
+                    <i class="fas fa-database"></i>
+                    <span class="nav-link-text">Wyświetlanie widoków</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div ng-view></div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fa fa-angle-up"></i>
+    </a>
+    <script src="/pre/js/jquery-3.2.1.min"></script>
+    <script src="/pre/js/bootstrap.min.js"></script>
+    <script src="/pre/js/angular.min.js"></script>
+    <script src="/pre/js/angular-route.min.js"></script>
+    <script src="/pre/js/JSON-to-Table.min.1.0.0.js"></script>
+    <script src="app.js"></script>
+
+</div>
+</body>
+</html>
