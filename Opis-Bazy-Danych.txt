@@ -1,0 +1,44 @@
+
+
+
+					Projekt z Baz Danych
+					Temat Projektu: Klub Pi³karski
+Grupa: 14B
+Wykonali:
+Piotr Piasecki
+Emil Nowak
+Micha³ M³odawski
+Konrad Nowakowski
+
+Opis Projektu:
+Projekt zbudowany dla tematu Klub Pi³karski. W projekcie jest 10 tabel, 6 widoków, 3 wyzwalacze, 3 kursory.
+1. Widok to tabela utworzona za poœrednictwem normalnego zapytania.Z widoku korzystamy jak ze zwyk³ej tabeli,
+wiêc mo¿na wykonywaæ dowolne kwerendy.Widoki nie maj¹ fizycznej reprezentacji do czasu a¿ nie zostanie utworzony
+ich indeks.
+
+Widoki w projekcie:
+-DlugoscUmowyPilkarza - wyœwietla d³ugoœæ umowy pi³karzy
+-HarmonogramPilkarzy - wyœwietla plan zajêæ dla pi³karzy
+-UbezpieczeniePilkarzy - wyœwietla informacje na temat ubezpieczenia pi³karzy
+-SedziowieMecze - wyswietla informacje na temat sêdziów oraz informacje na temat meczu w kórym sêdziowali
+-SponsorKontrakrtyPilkarzy - wyœwietla informacje na temat kontraktów pi³karskich
+-DlugoscUmowyPracownika - wyœweitla d³ugoœæ umowy pracowników
+
+2. Kursory to bufor do którego zapisywane s¹ wiersze z wynikami pozyskane z tabel dla stworzonych zapytañ.Umo¿liwa 
+przejrzenie wiersz po wierszu dzia³ania instrukcji SELECT i wykonanie operacji.
+
+Kursory w projekcie:
+-k_sedzia2-kursor oparty na procedurze ktora s³u¿y do dodawania pi³karzy
+-k_sedzia- kursor opart na funkcji wyswietlajacy sedziego
+-kursor_1 -kursor oparty na procedurze która sumuje ubezpieczenia
+
+3. Wyzwalacze s¹ procedurami uruchamiane gdy zaistnieje jakieœ zdarzenie. Zdarzenia mog¹ modyfikowaæ tabele w bazie dancyh.
+Zazwyczaj wyzwalacze s¹ stosowane aby sprawdzaæ poprawnoœæ wprowadzonych danych.
+
+Wyzwalacze w projekcie:
+-opieka_pilkarz - wyzwalacz dodaj¹cy dla ka¿dego pi³karza podstawowe ubezpieczenie zdrowotne od klubu
+-umowa_pilkarz - wyzwalacz dodaj¹cy umowê dla nowo dodanych pi³karzy
+-umowa_pracownik - wyzwalacz dodaj¹cy umowê dla nowo dodanych pracowników
+
+4. Klient posiada podstawowe mo¿liwoœci takie jak tworzenie table, wyœwietlanie tabel, tworzenie sekwencji, funckji, procedur,
+wykonywanie dowolnego kodu sql i wyœwietlanie widoków. Zosta³ napisany w PHP z dodatkiem OCI, AngularJS, JQuery oraz w HTML

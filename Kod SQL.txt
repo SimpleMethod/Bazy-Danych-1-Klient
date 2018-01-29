@@ -1,0 +1,468 @@
+----------DROP'Y----------
+DROP TABLE Statystyki CASCADE CONSTRAINTS;
+DROP TABLE Mecze CASCADE CONSTRAINTS;
+DROP TABLE Sedziowie CASCADE CONSTRAINTS;
+DROP TABLE Kontrakty CASCADE CONSTRAINTS;
+DROP TABLE Sponsor CASCADE CONSTRAINTS;
+DROP TABLE Ubezpieczenie CASCADE CONSTRAINTS;
+DROP TABLE Umowa CASCADE CONSTRAINTS;
+DROP TABLE Pracownicy CASCADE CONSTRAINTS;
+DROP TABLE Pilkarze CASCADE CONSTRAINTS;
+DROP TABLE Harmonogram CASCADE CONSTRAINTS;
+
+----------CREATE'Y----------
+CREATE TABLE Harmonogram(
+ID_Harmonogramu NUMBER CONSTRAINT ha_pk PRIMARY KEY,
+data_harmonogramu DATE NOT NULL,
+miejsce VARCHAR2(40) NOT NULL,
+rodzaj VARCHAR2(50) NOT NULL,
+czas_trwania NUMBER NOT NULL
+);
+CREATE TABLE Pilkarze(
+ID_Pilkarza NUMBER CONSTRAINT pi_pk PRIMARY KEY,
+ID_Harmonogramu NUMBER,
+CONSTRAINT pi_ha_fk FOREIGN KEY(ID_Harmonogramu) REFERENCES Harmonogram(ID_Harmonogramu),
+imie VARCHAR2(30) NOT NULL,
+nazwisko VARCHAR2(30) NOT NULL,
+pesel NUMBER NOT NULL UNIQUE CHECK (LENGTH(pesel)=11),
+pozycja VARCHAR2(20) NOT NULL,
+numer_na_koszulce NUMBER NOT NULL,
+kontuzja NUMBER DEFAULT 0 CHECK(kontuzja=0 OR kontuzja=1)
+);
+CREATE TABLE Pracownicy(
+ID_Pracownika NUMBER CONSTRAINT pr_pk PRIMARY KEY,
+imie VARCHAR2(30) NOT NULL,
+nazwisko VARCHAR2(50) NOT NULL,
+stanowisko VARCHAR2(50) NOT NULL,
+pesel NUMBER NOT NULL UNIQUE CHECK (LENGTH(pesel)=11)
+);
+CREATE TABLE Umowa(
+ID_Umowy NUMBER CONSTRAINT um_pk PRIMARY KEY,
+ID_Pilkarza NUMBER,
+CONSTRAINT um_pi_fk FOREIGN KEY(ID_Pilkarza) REFERENCES Pilkarze(ID_Pilkarza),
+ID_Pracownika NUMBER,
+CONSTRAINT um_pr_fk FOREIGN KEY(ID_Pracownika) REFERENCES Pracownicy(ID_Pracownika),
+dlugosc_umowy NUMBER NOT NULL,
+typ_umowy VARCHAR2(50) NOT NULL,
+premia NUMBER DEFAULT 0,
+wynagrodzenie NUMBER NOT NULL
+);
+CREATE TABLE Ubezpieczenie(
+ID_Ubezpieczenia NUMBER CONSTRAINT ub_pk PRIMARY KEY,
+ID_Pilkarza NUMBER NOT NULL,
+CONSTRAINT ub_pi_fk FOREIGN KEY(ID_Pilkarza) REFERENCES Pilkarze(ID_Pilkarza),
+obiekt_ubezpieczenia VARCHAR2(40) NOT NULL,
+kwota NUMBER NOT NULL,
+nazwa_ubezpieczyciela VARCHAR2(40) NOT NULL
+);
+CREATE TABLE Sponsor(
+ID_Sponsora NUMBER CONSTRAINT sp_pk PRIMARY KEY,
+typ VARCHAR2(60) NOT NULL,
+nazwa VARCHAR2(75) NOT NULL
+);
+CREATE TABLE Kontrakty(
+ID_Kontraktu NUMBER CONSTRAINT ko_pk PRIMARY KEY,
+ID_Sponsora NUMBER NOT NULL,
+CONSTRAINT ko_sp_fk FOREIGN KEY(ID_Sponsora) REFERENCES Sponsor(ID_Sponsora),
+ID_Pilkarza NUMBER NOT NULL,
+CONSTRAINT ko_pi_fk FOREIGN KEY(ID_Pilkarza) REFERENCES Pilkarze(ID_Pilkarza),
+ilosc_gotowki NUMBER NOT NULL,
+dlugosc_umowy NUMBER NOT NULL
+);
+CREATE TABLE Sedziowie(
+ID_Sedziego NUMBER CONSTRAINT se_pk PRIMARY KEY,
+imie VARCHAR2(30) NOT NULL,
+nazwisko VARCHAR2(50) NOT NULL,
+pesel NUMBER NOT NULL UNIQUE CHECK (LENGTH(pesel)=11)
+);
+CREATE TABLE Mecze(
+ID_Meczu NUMBER CONSTRAINT mz_pk PRIMARY KEY,
+ID_Sedziego1 NUMBER NOT NULL,
+CONSTRAINT mz_se1_fk FOREIGN KEY(ID_Sedziego1) REFERENCES Sedziowie(ID_Sedziego),
+ID_Sedziego2 NUMBER NOT NULL,
+CONSTRAINT mz_se2_fk FOREIGN KEY(ID_Sedziego2) REFERENCES Sedziowie(ID_Sedziego),
+ID_Sedziego3 NUMBER NOT NULL,
+CONSTRAINT mz_se3_fk FOREIGN KEY(ID_Sedziego3) REFERENCES Sedziowie(ID_Sedziego),
+miejsce VARCHAR2(75) NOT NULL,
+data_meczu DATE NOT NULL,
+godzina VARCHAR(5) NOT NULL,
+wynik VARCHAR2(10),
+sprzedane_bilety NUMBER
+);
+CREATE TABLE Statystyki(
+ID_Statystyki NUMBER CONSTRAINT st_pk PRIMARY KEY,
+ID_Meczu NUMBER NOT NULL,
+CONSTRAINT st_mz_fk FOREIGN KEY(ID_Meczu) REFERENCES Mecze(ID_Meczu),
+ID_Pilkarza NUMBER,
+CONSTRAINT st_pi_fk FOREIGN KEY(ID_Pilkarza) REFERENCES Pilkarze(ID_Pilkarza),
+typ VARCHAR2(50) NOT NULL,
+minuta NUMBER NOT NULL
+);
+
+----------SEKWENCJE----------
+DROP SEQUENCE IDstatystyki_sequence;
+DROP SEQUENCE IDmecze_sequence;
+DROP SEQUENCE IDkontrakty_sequence;
+DROP SEQUENCE IDubezpieczenie_sequence;
+DROP SEQUENCE IDharmonogram_sequence;
+DROP SEQUENCE IDsponsor_sequence;
+DROP SEQUENCE IDsedziowie_sequence;
+DROP SEQUENCE IDpracownicy_sequence; 
+DROP SEQUENCE IDpilkarze_sequence;
+DROP SEQUENCE IDumowa_sequence;
+CREATE SEQUENCE IDumowa_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDpilkarze_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDpracownicy_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDsedziowie_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDsponsor_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDharmonogram_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDubezpieczenie_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDkontrakty_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDmecze_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+CREATE SEQUENCE IDstatystyki_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE ORDER;
+
+----------INSERT'Y----------
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Stanis³aw', 'Borkowski', 59062963679);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Eliasz', 'Chmielewski', 81090639350);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Maurycy', 'Czerwinski', 70071774652);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Augustyn', 'Kowalczyk', 64091504917);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Szczepan', 'Adamczyk', 71051521679);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Aron', 'Nowicki', 64101896577);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Dobros³aw', 'Nowicki', 85020826656);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Celestyn', 'Adamczyk', 93083191910);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Jaros³aw', 'Kucharski', 87010786537);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Justyn', 'Wiœniewski', 87092823836);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Alojzy', 'Ostrowski', 66122559213);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Maksym', 'Tomaszewski', 80022622330);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Lucjusz', 'Soko³owski', 62083199792);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Fryderyk', 'Jaworski', 86100980912);
+INSERT INTO Sedziowie VALUES(IDsedziowie_sequence.NEXTVAL,'Tymoteusz', 'Kowalczyk', 42082832812);
+
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie marki na koszulce', 'Adidas');     
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie marki na koszulce', 'Nike');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Udzial w reklamie', 'Stacja paliw Orlen');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Udzial w reklamie', 'TESCO');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie sponsora na koszulce', 'LOTTO');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie sponsora na koszulce', 'Sieæ telefonii komórkowej Plus');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie sponsora na koszulce', 'Sieæ telefonii komórkowej Play');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie butów sportowych', 'Nike');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie butów sportowych', 'Adidas');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie butów sportowych', 'New Ballance');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Udzial w reklamie', 'Sieæ restauracjii McDonalds');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Udzial w reklamie', 'Producent telefonów HTC');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie marki odzie¿owej', 'Producent garniturów Vistula');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Promowanie marki odzie¿owej', 'Producent garniturów Armani');
+INSERT INTO Sponsor VALUES(IDsponsor_sequence.NEXTVAL,'Udzial w kampanii reklamowej zegarków Albert Riele', 'APART');
+
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Franciszek', 'Maciejewski', 'Wiceprezes ds. organizacyjno-finansowych', 59121128232);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Ignacy', 'Nowakowski', 'Wiceprezes ds. szkoleniowych', 92090180630);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Andrzej ', 'WoŸniak', 'Wiceprezes ds. zagranicznych', 80020519131);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Jaromir', 'Wieczorek', 'Wiceprezes ds. pi³karstwa profesjonalnego', 32081792839);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Aleksy', 'Ostrowski', 'Wiceprezes ds. pi³karstwa amatorskiego', 90022751570);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Marek', 'Kwiatkowski', 'Cz³onek zarz¹du', 60020330198);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Mœcis³aw', 'Kucharski', 'Cz³onek zarz¹du', 88040312152);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Jacek', 'Sobczak', 'Cz³onek zarz¹du', 36050729053);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Maciej', 'Pawlak', 'Cz³onek zarz¹du', 37102882733);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Dobros³aw', 'Kwiatkowski', 'Cz³onek zarz¹du', 93041803530);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Kondrad', 'Paw³owski', 'Cz³onek zarz¹du', 93042803430);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Klemens', 'WoŸniak', 'Cz³onek zarz¹du', 87100332372);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Lucjan', 'Kalinowski', 'Cz³onek zarz¹du', 91022579393);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Ferdynand', 'Jasiñski', 'Trener', 69123029196);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Maurycy', 'Czerwinski', 'Trener', 59022037493);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Iwo', 'Zawadzki', 'Medyk', 78082281172);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Eliasz', 'Kalinowski', 'Medyk', 90050485096);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Kuba', 'Olszewski', 'Medyk', 81100597575);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Tadzio', 'Jasiñski', 'Medyk', 69112898239);
+INSERT INTO Pracownicy VALUES(IDpracownicy_sequence.NEXTVAL,'Arkadiusz', 'Gorski', 'Medyk', 35012592234);
+
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-10-01', 'Silownia', 'Zajêcia silowe', 60);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-01-09', 'Silownia', 'Zajêcia silowe', 55);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-12-15', 'Silownia', 'Zajêcia silowe', 40);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-04-01', 'Boisko', 'Trening taktyczny', 70);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-09-08', 'Boisko', 'Trening techniczny', 65);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-04-07', 'Boisko', 'Æwiczenia treningowe', 90);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-04-07', 'Basen', 'Trening wytrzymaloœciowy', 25);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-10-01', 'Basen', 'Rehabilitacja', 40);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-08-08', 'Silownia', 'Rehabilitacja', 30);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-11-11', 'Silownia', 'Trening silowy', 50);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-02-11', 'Silownia', 'Trening silowy', 30);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-02-09', 'Boisko', 'Trening taktyczny', 90);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-03-15', 'Boisko', 'Æwiczenia treningowe', 50);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-01-19', 'Basen', 'Trening wytrzymaloœciowy', 30);
+INSERT INTO Harmonogram VALUES(IDharmonogram_sequence.NEXTVAL,'2018-01-12', 'Silownia', 'Rehabilitacja', 40);
+
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,5,'Lucjan', 'Wojciechowski', 90040641314, 'Bramkarz', 1, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,1,'Amadej', 'Adamczyk', 47030720997, 'Napastnik', 2, 1);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,6,'Lechos³aw', 'Majewski', 35030819577, 'Napastnik', 3, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,NULL,'Les³aw', 'Sobczak', 71090929434, 'Obroñca', 4, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,10,'Boles³aw', 'Soko³owski', 88052756858, 'Pomocnik', 5, 1);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,2,'Maksym', 'Sobczak', 60032035252, 'Pomocnik', 6, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,4,'Arkadiusz', 'Kowalczyk', 67022659054, 'Obroñca', 7, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,NULL,'Œwiêtope³k', 'Paw³owski', 64102338452, 'Bramkarz', 8, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,4,'Jacek', 'Piotrowski', 75030240472, 'Napastnik', 9, 1);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,5,'Augustyn', 'Kaczmarek', 76010137351, 'Napastnik', 10, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,6,'Eustachy', 'Jab³oñski', 56030199577, 'Napastnik', 11, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,8,'Dorofiej', 'Symanski', 34083117434, 'Napastnik', 12, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,9,'Czcibor', 'Borkowski', 88061692271, 'Obroñca', 13, 1);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,11,'Nikifor', 'Wysocki', 47051208339, 'Pomocnik', 14, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,NULL,'Tomasz', 'Król', 41081032834, 'Obroñca', 15, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,3,'Lucjusz', 'Symanski', 88022252313, 'Napastnik', 16, 1);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,3,'Klemens', 'Chmielewski', 53051248479, 'Napastnik', 17, 1);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,3,'Bronis³aw', 'Zielinski', 79051374792, 'Pomocnik', 18, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,1,'Bonifacy', 'Zielinski', 91021328677, 'Obroñca', 19, 0);
+INSERT INTO Pilkarze VALUES(IDpilkarze_sequence.NEXTVAL,NULL,'Jurek', 'Grabowski', 92041593591, 'Pomocnik', 20, 0);
+
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,1,'Lewa noga', 135000, 'ERGO HESTIA');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,1,'Prawa noga', 400000, 'PZU');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,2,'Zêby', 335000, 'ALLIANZ');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,2,'Lewa noga', 56000, 'ERGO HESTIA');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,3,'Lewa rêka', 5000, 'GENERALI');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,4,'Prawa noga', 9000, 'ERGO HESTIA');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,7,'Zêby', 13000, 'PZU');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,6,'Lewa noga', 12000, 'GENERALI');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,6,'Prawa noga', 100000, 'ERGO HESTIA');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,5,'Glowa', 67000, 'ALLIANZ');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,5,'Prawa noga', 23000, 'PZU');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,9,'Zêby', 89000, 'ERGO HESTIA');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,20,'Lewa noga', 10000, 'ALLIANZ');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,11,'Prawa noga', 345000, 'ERGO HESTIA');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,15,'Prawa rêka', 231000, 'PZU');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,12,'Nos', 78000, 'GENERALI');
+INSERT INTO Ubezpieczenie VALUES(IDubezpieczenie_sequence.NEXTVAL,14,'Lewa noga', 19000, 'ERGO HESTIA');
+
+--UMOWY DLA PILKARZY--
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,1,NULL, 2, 'Umowa na czas okreœlony', 400, 5400);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,2,NULL, 1, 'Umowa na okres próbny', 0, 6700);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,3,NULL, 2, 'Umowa na czas okreœlony', 0, 4500);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,4,NULL, 3, 'Umowa na czas okreœlony', 0, 9800);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,5,NULL, 3, 'Umowa na czas okreœlony', 500, 4300);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,6,NULL, 3, 'Umowa na czas wykonania okreœlonej pracy', 400, 6700);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,7,NULL, 3, 'Umowa na czas okreœlony', 900, 5600);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,8,NULL, 4, 'Umowa na czas wykonania okreœlonej pracy', 0, 6700);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,9,NULL, 4, 'Umowa na czas okreœlony', 0, 7800);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,10,NULL, 1, 'Umowa na czas okreœlony', 0, 2300);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,11,NULL, 5, 'Umowa na czas okreœlony', 0, 3400);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,12,NULL, 5, 'Umowa na czas okreœlony', 0, 4500);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,13,NULL, 5, 'Umowa na czas okreœlony', 400, 5600);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,14,NULL, 2, 'Umowa na czas okreœlony', 500, 5400);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,15,NULL, 3, 'Umowa na czas okreœlony', 2000, 3700);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,16,NULL, 3, 'Umowa na czas okreœlony', 0, 7600);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,17,NULL, 1, 'Umowa na czas okreœlony', 0, 8200);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,18,NULL, 1, 'Umowa na czas okreœlony', 0, 6100);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,19,NULL, 1, 'Umowa na czas okreœlony', 0, 6300);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,20,NULL, 2, 'Umowa na czas okreœlony', 0, 6300);
+
+--UMOWY DLA PRACOWNIKOW--
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 1, 1, 'Umowa na czas okreœlony', 0, 1200);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 2, 1, 'Umowa na czas okreœlony', 350, 3500);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 3, 2, 'Umowa na czas okreœlony', 0, 2220);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 4, 3, 'Umowa na czas okreœlony', 0, 3330);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 5, 1, 'Umowa na czas okreœlony', 0, 4440);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 6, 3, 'Umowa na czas okreœlony', 400, 5460);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 7, 6, 'Umowa na czas okreœlony', 0, 6660);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 8, 2, 'Umowa na czas okreœlony', 0, 3330);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 9, 1, 'Umowa na czas okreœlony', 0, 1440);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 10, 1, 'Umowa na czas okreœlony', 500, 3440);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 11, 3, 'Umowa na czas okreœlony', 500, 2440);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 12, 1, 'Umowa na czas okreœlony', 0, 5220);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 13, 2, 'Umowa na czas okreœlony', 0, 2310);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 14, 1, 'Umowa na czas okreœlony', 0, 2330);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 15, 2, 'Umowa na czas okreœlony', 450, 2500);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 16, 2, 'Umowa na czas okreœlony', 0, 2450);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 17, 2, 'Umowa na czas okreœlony', 700, 2330);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 18, 1, 'Umowa na okres próbny', 0, 2530);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 19, 3, 'Umowa na czas okreœlony', 120, 3450);
+INSERT INTO Umowa VALUES(IDumowa_sequence.NEXTVAL,NULL, 20, 4, 'Umowa na czas okreœlony', 200, 3460);
+
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 1, 5, 45000, 1);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 3, 3, 40000, 2);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 4, 5, 90000, 1);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 8, 7, 23000, 1);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 5, 1, 100000, 3);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 7, 9, 26000, 1);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 1, 8, 94000, 2);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 1, 10, 87000, 1);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 9, 12, 123000, 3);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 11, 13, 231000, 3);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 14, 14, 65000, 2);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 15, 15, 53000, 2);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 15, 17, 75000, 1);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 2, 19, 12000, 3);
+INSERT INTO Kontrakty VALUES(IDkontrakty_sequence.NEXTVAL, 10, 20, 152000, 3);
+
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 1, 6, 7, 'Stadion narodowy', '2018-01-02', '13:45', '2:1', 45000);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 3, 5, 9, 'Stadion miejski we Wroclawiu', '2018-01-03', '17:50', '3:2', 20000);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 10, 2, 1, 'Stadion Energa', '2018-01-05', '20:00', '1:1', 60000);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 15, 7, 4, 'INEA Stadion', '2018-01-07', '16:45', '0:0', 23000);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 12, 5, 3, 'Stadion olimpijski we Wroclawiu', '2018-01-29', '16:30', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 5, 3, 4, 'Stadion miejski w Bialymstoku', '2018-02-03', '13:55', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 11, 12, 13, 'Stadion narodowy', '2018-02-05', '14:20', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 12, 5, 7, 'SGP Arena', '2018-02-09', '15:45', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 13, 9, 3, 'Arena Lublin', '2018-02-15', '21:20', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 2, 4, 7, 'Stadion miejski w Tychach', '2018-02-25', '20:30', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 4, 8, 9, 'Stadion GOSiR', '2018-03-02', '19:30', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 3, 7, 5, 'Stadion Cracovii', '2018-03-05', '13:45', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 8, 13, 2, 'Stadion miejski w Zielonej Górze', '2018-03-06', '15:45', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 1, 8, 14, 'Stadion narodowy', '2018-03-06', '16:40', NULL, NULL);
+INSERT INTO Mecze VALUES(IDmecze_sequence.NEXTVAL, 12, 15, 3, 'Stadion RKS Radomiak', '2018-03-09', '20:45', NULL, NULL);
+
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 1, 4, 'Gol zyskany', 23);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 1, 9, 'Wykonanie rzutu karnego', 38);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 1, 15, 'Wykonanie rzutu wolnego', 40);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 1, 6, 'Gol zyskany', 46);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 1, 8, 'Czerwona kartka', 56);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 1, 10, '¯ólta kartka', 81);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 1, NULL, 'Gol utracony', 91);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 2, NULL, 'Gol utracony', 5);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 2, NULL, 'Gol utracony', 43);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 2, 13, 'Gol zyskany', 56);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 2, 3, 'Gol zyskany', 61);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 2, 15, 'Gol zyskany', 83);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 2, 18, 'Wykonanie rzutu karnego', 89);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 3, 6, 'Gol zyskany', 13);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 3, 3, 'Faul', 45);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 3, NULL, 'Gol utracony', 78);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 4, 17, 'Wykonanie rzutu karnego', 23);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 4, 4, 'Wykonanie rzutu wolnego', 49);
+INSERT INTO Statystyki VALUES(IDstatystyki_sequence.NEXTVAL, 4, 6, '¯ólta kartka', 76);
+
+--Widoki
+DROP VIEW   DlugoscUmowyPilkarza;
+DROP VIEW   HarmonogramPilkarzy;  
+DROP VIEW   UbezpieczeniePilkarzy;
+DROP VIEW   SedziowieMecze;
+DROP VIEW   SponsorKontraktyPilkarze;
+DROP VIEW   DlugoscUmowyPracownika;
+
+CREATE VIEW DlugoscUmowyPilkarza AS SELECT P.imie,P.nazwisko,U.dlugosc_umowy,U.typ_umowy
+FROM Pilkarze P, Umowa U WHERE P.ID_Pilkarza=U.ID_Pilkarza;
+
+CREATE VIEW HarmonogramPilkarzy AS SELECT P.imie,P.nazwisko,H.data_harmonogramu,H.miejsce,H.czas_trwania FROM
+Pilkarze P, Harmonogram H WHERE P.ID_Pilkarza=H.ID_Harmonogramu;
+
+CREATE VIEW UbezpieczeniePilkarzy AS SELECT P.imie, P.nazwisko, U.obiekt_ubezpieczenia, U.kwota, U.nazwa_ubezpieczyciela FROM Pilkarze P,
+Ubezpieczenie U WHERE P.ID_Pilkarza=U.ID_Ubezpieczenia;
+
+CREATE VIEW SedziowieMecze AS SELECT S.Imie, S.nazwisko, M.ID_Meczu, M.miejsce, M.data_meczu, M.godzina FROM
+Sedziowie S, Mecze M WHERE S.ID_Sedziego=M.ID_Meczu;
+
+CREATE VIEW SponsorKontraktyPilkarze AS SELECT S.nazwa, S.typ, K.ilosc_gotowki, K.dlugosc_umowy,P.imie, P.nazwisko FROM 
+Sponsor S, Kontrakty K, Pilkarze P  WHERE S.ID_Sponsora=K.ID_Kontraktu AND K.ID_Kontraktu=P.ID_Pilkarza;
+
+CREATE VIEW DlugoscUmowyPracownika AS SELECT P.imie,P.nazwisko,P.stanowisko,U.dlugosc_umowy,U.typ_umowy
+FROM Pracownicy P, Umowa U WHERE P.ID_Pracownika=U.ID_Pilkarza;
+
+--wyzwalacz tworzacy umowe dla wprowadzanego pilkarza
+CREATE OR REPLACE TRIGGER umowa_pilkarza 
+AFTER INSERT ON Pilkarze 
+FOR EACH ROW 
+BEGIN
+INSERT INTO Umowa(ID_Umowy, ID_Pilkarza, ID_Pracownika, dlugosc_umowy, typ_umowy, premia, wynagrodzenie)
+VALUES(IDUMOWA_SEQUENCE.NEXTVAL, IDPILKARZE_SEQUENCE.CURRVAL, NULL, 2, 'Umowa na czas okreœlony', 0, 5500);
+--Zalozenie, ze pilkarze dostaja umowy na dwa lata, premie wynoszaca 0 i wynagrodzenie 5500
+END;
+/
+
+--wyzwalacz tworzacy umowe dla wprowadzanego pracownika 
+CREATE OR REPLACE TRIGGER umowa_pracownik
+AFTER INSERT ON Pracownicy
+FOR EACH ROW 
+BEGIN
+INSERT INTO Umowa(ID_Umowy, ID_Pilkarza, ID_Pracownika, dlugosc_umowy, typ_umowy, premia, wynagrodzenie)
+VALUES(IDUMOWA_SEQUENCE.NEXTVAL, NULL,IDpracownicy_sequence.CURRVAL, 1, 'Umowa na czas okreœlony', 0, 2400);
+--Zalozenie, ze pracownicy dostaja umowy na rok, premie wynoszaca 0 i wynagrodzenie 2400
+END;
+/
+
+--wyzwalacz który dodaje podstawowa opieke zdrowotna od klubu dla nowego pilkarza
+CREATE OR REPLACE TRIGGER opieka_pilkarz
+AFTER INSERT ON Pilkarze
+FOR EACH ROW 
+BEGIN
+INSERT INTO Ubezpieczenie(ID_Ubezpieczenia, ID_Pilkarza, obiekt_ubezpieczenia, kwota, nazwa_ubezpieczyciela)
+VALUES(IDubezpieczenie_sequence.NEXTVAL,IDPILKARZE_SEQUENCE.CURRVAL, 'Podstawowe ubezpieczenie zdrowotne', 3000, 'Ubezpieczenie klubowe');
+END;
+/
+
+--Kursory
+
+--DROPY
+DROP PROCEDURE dodaj_sedziego;
+DROP PROCEDURE suma_ubezpieczen;
+DROP FUNCTION wyswietl_sedziego;
+
+-- pierwszy
+
+CREATE OR REPLACE PROCEDURE dodaj_sedziego 
+(
+    imie          VARCHAR2,
+    nazwisko        VARCHAR2,
+    pesel           NUMBER
+)
+ IS
+    CURSOR aaa IS SELECT
+        id_Sedziego
+                      FROM
+        Sedziowie;
+
+    tmp   NUMBER;
+BEGIN
+    FOR fid IN aaa LOOP
+        tmp := fid.id_Sedziego;
+    END LOOP;
+
+    INSERT INTO Sedziowie VALUES (
+        tmp+1,
+        imie,
+        nazwisko,
+        pesel
+        
+    );
+END;
+/
+
+EXECUTE dodaj_sedziego('jan','kot','11111112341');
+SELECT * FROM Sedziowie;
+
+--drugi
+
+
+CREATE OR REPLACE  FUNCTION wyswietl_sedziego RETURN NUMBER IS
+
+        CURSOR aaa (
+            p_imie VARCHAR2
+        ) IS SELECT
+            s.id_Sedziego
+             FROM
+           Sedziowie s
+             WHERE
+            imie =  p_imie;
+
+        tmp   NUMBER;
+    BEGIN
+        OPEN aaa('Maksym');
+        FETCH aaa INTO tmp;
+        CLOSE aaa;
+        RETURN tmp;
+    END;
+/
+SELECT wyswietl_sedziego FROM DUAL;
+
+--trzeci
+CREATE OR REPLACE PROCEDURE suma_ubezpieczen IS
+CURSOR kursor_1 IS SELECT Ubezpieczenie.kwota FROM Ubezpieczenie;
+tmp Ubezpieczenie.kwota%TYPE;
+Suma_zarobkow Ubezpieczenie.kwota%TYPE := 0;
+BEGIN
+OPEN kursor_1;
+LOOP
+  FETCH kursor_1 INTO tmp;
+  EXIT WHEN kursor_1%NOTFOUND;
+  Suma_zarobkow := Suma_zarobkow + tmp;
+END LOOP;
+DBMS_OUTPUT.PUT_LINE('kwota ubezpieczen ' || Suma_zarobkow || ' zl');
+CLOSE kursor_1;
+END;
+/
+
+EXECUTE suma_ubezpieczen;
