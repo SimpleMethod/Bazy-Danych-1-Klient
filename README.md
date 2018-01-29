@@ -1,7 +1,7 @@
 
 
 
-					# Projekt z Baz Danych
+					 Projekt z Baz Danych
 					Temat Projektu: Klub Piłkarski
 Grupa: 14B
 Wykonali:
